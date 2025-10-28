@@ -62,6 +62,7 @@ const deleteTipoCliente = (req, res) => {
     return res.status(404).json({ error: `Tipo de Cliente com ID ${id} não encontrado.` });
 };
 
+
 const createCliente = (req, res) => {
     const { nome, tipoClienteId, email, telefone } = req.body;
     const tipoCliente = data.findTipoClienteById(tipoClienteId);
@@ -92,13 +93,21 @@ const realizarEmprestimo = (req, res) => {
     }
 
     const tipoCliente = data.findTipoClienteById(cliente.tipoClienteId);
+
+    if (!tipoCliente) {
+        return res.status(500).json({
+            error: 'Erro de integridade: Tipo de Cliente associado não encontrado.',
+            tipoClienteId: cliente.tipoClienteId
+        });
+    }
+
     const livrosAEmprestar = Array.isArray(listaLivros) ? listaLivros.length : 0;
     const maxLivros = tipoCliente.maxLivros;
     const podeRetirar = (cliente.livrosEmprestadosAtualmente + livrosAEmprestar) <= maxLivros;
 
     if (!podeRetirar) {
         return res.status(422).json({
-            error: `Limite de empréstimo excedido. Máximo: ${maxLivros}. Com o empréstimo, terá ${cliente.livrosEmprestadosAtualmente + livrosAEmprestar} livros.`,
+            error: `Limite de empréstimo excedido. Máximo: ${maxLivros}.`,
             detalhes: {
                 livrosEmprestados: cliente.livrosEmprestadosAtualmente,
                 livrosTentandoRetirar: livrosAEmprestar,
@@ -109,7 +118,13 @@ const realizarEmprestimo = (req, res) => {
 
     cliente.livrosEmprestadosAtualmente += livrosAEmprestar;
 
-    const novoEmprestimo = { id: data.nextEmprestimoId++, clienteMatricula, listaLivros, dataRetirada: new Date().toISOString().split('T')[0], devolvido: false };
+    const novoEmprestimo = {
+        id: data.nextEmprestimoId++,
+        clienteMatricula,
+        listaLivros,
+        dataRetirada: new Date().toISOString().split('T')[0],
+        devolvido: false
+    };
     data.emprestimos.push(novoEmprestimo);
 
     return res.status(200).json({
@@ -143,7 +158,6 @@ const realizarDevolucao = (req, res) => {
         livrosEmprestadosAtualmente: cliente.livrosEmprestadosAtualmente
     });
 };
-
 
 module.exports = {
     validateTipoCliente,
