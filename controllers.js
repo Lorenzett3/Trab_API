@@ -1,4 +1,3 @@
-
 const data = require('./data');
 
 function validateTipoCliente(req, res, next) {
@@ -11,7 +10,6 @@ function validateTipoCliente(req, res, next) {
     }
     next();
 }
-
 
 const listTiposClientes = (req, res) => {
     return res.status(200).json(data.tiposClientes);
@@ -27,17 +25,42 @@ const getTipoClienteById = (req, res) => {
 
 const createTipoCliente = (req, res) => {
     const { nome, maxLivros } = req.body;
-
     const novoTipo = {
         id: data.nextTipoClienteId++,
         nome,
         maxLivros: parseInt(maxLivros)
     };
     data.tiposClientes.push(novoTipo);
-
     return res.status(201).json(novoTipo);
 };
 
+const updateTipoCliente = (req, res) => {
+    const id = parseInt(req.params.id);
+    const { nome, maxLivros } = req.body;
+
+    const tipoIndex = data.tiposClientes.findIndex(t => t.id === id);
+
+    if (tipoIndex !== -1) {
+        data.tiposClientes[tipoIndex] = {
+            ...data.tiposClientes[tipoIndex],
+            nome: nome || data.tiposClientes[tipoIndex].nome,
+            maxLivros: parseInt(maxLivros) || data.tiposClientes[tipoIndex].maxLivros,
+        };
+        return res.status(200).json(data.tiposClientes[tipoIndex]);
+    }
+    return res.status(404).json({ error: 'Tipo de Cliente não encontrado.' });
+};
+
+const deleteTipoCliente = (req, res) => {
+    const id = parseInt(req.params.id);
+    const tipoIndex = data.tiposClientes.findIndex(t => t.id === id);
+
+    if (tipoIndex !== -1) {
+        data.tiposClientes.splice(tipoIndex, 1);
+        return res.status(204).send();
+    }
+    return res.status(404).json({ error: `Tipo de Cliente com ID ${id} não encontrado.` });
+};
 
 const createCliente = (req, res) => {
     const { nome, tipoClienteId, email, telefone } = req.body;
@@ -59,7 +82,6 @@ const createCliente = (req, res) => {
     data.clientes.push(novoCliente);
     return res.status(201).json(novoCliente);
 };
-
 
 const realizarEmprestimo = (req, res) => {
     const { clienteMatricula, listaLivros } = req.body;
@@ -87,8 +109,7 @@ const realizarEmprestimo = (req, res) => {
 
     cliente.livrosEmprestadosAtualmente += livrosAEmprestar;
 
-    const novoEmprestimo = {
-    };
+    const novoEmprestimo = { id: data.nextEmprestimoId++, clienteMatricula, listaLivros, dataRetirada: new Date().toISOString().split('T')[0], devolvido: false };
     data.emprestimos.push(novoEmprestimo);
 
     return res.status(200).json({
@@ -96,7 +117,6 @@ const realizarEmprestimo = (req, res) => {
         livrosEmprestadosAtualmente: cliente.livrosEmprestadosAtualmente
     });
 };
-
 
 const realizarDevolucao = (req, res) => {
     const { clienteMatricula, listaLivrosDevolvidos } = req.body;
@@ -124,11 +144,14 @@ const realizarDevolucao = (req, res) => {
     });
 };
 
+
 module.exports = {
     validateTipoCliente,
     listTiposClientes,
     getTipoClienteById,
     createTipoCliente,
+    updateTipoCliente,
+    deleteTipoCliente,
     createCliente,
     realizarEmprestimo,
     realizarDevolucao

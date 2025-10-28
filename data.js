@@ -1,5 +1,6 @@
 let nextTipoClienteId = 3;
 let nextClienteMatricula = 1003;
+let nextEmprestimoId = 1;
 
 const tiposClientes = [
     { id: 1, nome: 'Comum', maxLivros: 3 },
@@ -12,9 +13,7 @@ const clientes = [
 ];
 
 const emprestimos = [];
-
 const usuarios = [];
-
 
 
 function findTipoClienteById(id) {
