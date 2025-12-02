@@ -1,4 +1,4 @@
->API de Gerenciamento de Biblioteca (Trab_API)
+>API de Gerenciamento de Biblioteca (Trab_API). 
 
   Bem-vindo ao projeto da API de Gerenciamento de Biblioteca. Este documento contém as regras de negócio implementadas (Aluno 3) e o guia rápido de execução e colaboração Git para a equipe.
   
@@ -15,17 +15,16 @@
   Devolução: A devolução reduz o contador de livros emprestados (borrowedCount), liberando o cliente para novas locações.
 
 
->Guia Rápido de Execução
+>Guia Rápido de Execução:
   cd Trab_API
 
->Instalar todas as dependências
+>Instalar todas as dependências:
   npm install
 
->Executar o Servidor
+>Executar o Servidor:
   node server.js
 
-
->Credencial de Teste
+>Credencial de Teste:
   admin@bib.com / 123456
 
 
