@@ -17,13 +17,21 @@ Camada Middleware: Lida com segurança (JWT) e logging.
 Estrutura de Diretórios
 
 TRAB_API/
+
 ├── controller/      # Recebe requisições e chama o Service
+
 ├── middleware/      # Logger e Autenticação JWT
+
 ├── repository/      # Acesso aos arrays de dados (memória)
+
 ├── router/          # Definição de URLs
+
 ├── service/         # Lógica de Negócio e Validação
+
 ├── data.js          # Base de dados centralizada (arrays)
+
 └── app.js           # Ponto de entrada e montagem das rotas
+
 
 
 2. Unificação de Requisitos e Regras de Negócio (RNs)
