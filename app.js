@@ -1,28 +1,36 @@
-const express = require ("express")
-const livroRouter = require("./router/livro_router")
-const autorRouter = require("./router/autor_router")
-const usuarioRouter = require("./router/usuario_router")
-const loginController = require("./controller/login_controller")
+// app.js
+const express = require ("express");
+const { PORT } = require("./data");
+const { realizarLogin } = require("./controller/login_controller");
+const { realizaLog } = require("./middleware/logger_middleware"); 
 
-const app = express()
-const port = 3000
+const livroRouter = require("./router/livro_router");
+const autorRouter = require("./router/autor_router");
+const usuarioRouter = require("./router/usuario_router");
+const emprestimoRouter = require("./router/emprestimo_router");
 
-app.use(express.json())
+const editoraRouter = require("./router/editora_router");
+const clienteRouter = require("./router/cliente_router"); 
 
-app.get('/', (req, res) =>{
-    setTimeout(() => {
-        res.send('Hello World!')
-    }, 1000);
-})
+const app = express();
 
-app.post("/api/login", loginController.realizarLogin)
+app.use(realizaLog); 
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+    res.send('API de Biblioteca Funcional - Unificada (A1, A2, A3).');
+});
+
+app.post("/api/login", realizarLogin);
 
 app.use("/api/usuarios", usuarioRouter);
-
+app.use("/api/autores", autorRouter);
 app.use("/api/livros", livroRouter);
+app.use("/api/editoras", editoraRouter);
+app.use("/api/clientes", clienteRouter); 
+app.use("/api/emprestimos", emprestimoRouter); 
 
-app.use("/api/editoras", autorRouter);
-
-app.listen(port, () => {
-    console.log(`API running on port ${port}`)
-})
+app.listen(PORT, () => {
+    console.log(`API running on port ${PORT}`);
+});

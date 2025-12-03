@@ -1,20 +1,23 @@
-const emprestimoRepository = require("../repositoryBD/emprestimo_repository_bd");
+// service/token_service.js
+const jwt = require("jsonwebtoken");
 
-async function devolverLivro() {
-    if (emprestimo){
-        await emprestimoRepository.atualizar(id, emprestimo)
-        if ( nome && nomeCliente && dataDevolucao) {
-            return await devolucaoRepository.inserir(devolucao)
-        }
-        else {
-            throw { id: 400, msg: "Cliente e datas com dados incorretos."};
-        }
-    }
-    else {
-        throw { id: 404, msg: "Empréstimo não encontrado."}
-    }
-}
+const JWT_SECRET = process.env.JWT_SECRET || "segredissimo";
+const TOKEN_EXPIRATION = process.env.TOKEN_EXPIRATION || "1h";
+
+const criarToken = (payload) => {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
+};
+
+const verificarToken = (token) => {
+  try {
+    const decodedPayload = jwt.verify(token, JWT_SECRET);
+    return decodedPayload;
+  } catch (error) {
+    throw { id: 403, msg: "Token inválido ou expirado." };
+  }
+};
 
 module.exports = {
-    devolverLivro
-}
+  criarToken,
+  verificarToken,
+};

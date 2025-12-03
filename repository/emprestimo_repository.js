@@ -1,5 +1,4 @@
-const emprestimoRepository = require("../repository/devolucao_repository");
-
+// repository/emprestimo_repository.js
 let listaEmprestimo = [];
 let autoIncrement = 1;
 
@@ -9,19 +8,20 @@ function listar() {
 
 function inserir(emprestimo) {
     emprestimo.id = autoIncrement++;
+    emprestimo.livro_emprestado = true; 
+    emprestimo.isReturned = false;
     listaEmprestimo.push(emprestimo);
     return Promise.resolve(emprestimo);
 }
 
 function buscarEmprestimoPorId(id) {
-    return listaEmprestimo.findIndex((emprestimo) => emprestimo.id === id);
+    return Promise.resolve(listaEmprestimo.find(e => e.id == Number(id)));
 }
 
-
 function atualizar(id, emprestimo) {
-    let indice = buscarIndicePorId(id);
+    let indice = listaEmprestimo.findIndex(e => e.id === Number(id));
     if(indice >= 0) {
-        emprestimo.id = id; 
+        emprestimo.id = Number(id); 
         listaEmprestimo[indice] = emprestimo;
         return Promise.resolve(listaEmprestimo[indice]);
     }
@@ -29,14 +29,14 @@ function atualizar(id, emprestimo) {
 }
 
 function deletar(id) {
-    let indiceEmprestimo = buscarIndicePorId(id);
+    let indiceEmprestimo = listaEmprestimo.findIndex(e => e.id === Number(id));
     if(indiceEmprestimo >= 0) {
         let emprestimoRemovido = listaEmprestimo.splice(indiceEmprestimo, 1)[0];
         return emprestimoRemovido;
     }
     return Promise.resolve(undefined);
-
 }
+
 
 module.exports = {
   listar,

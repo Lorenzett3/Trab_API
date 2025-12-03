@@ -1,9 +1,13 @@
+// router/autor_router.js
 const express = require("express");
 const router = express.Router();
 
-const autorController = require("../controller/autor_controller")
+const autorController = require("../controller/autor_controller");
 
-//endpoint: /api/produtos
+const authMiddleware = require("../middleware/auth_middleware");
+
+router.use(authMiddleware);
+
 router.get('/', autorController.listar);
 router.post('/', autorController.inserir);
 router.get('/:id', autorController.buscarPorId);

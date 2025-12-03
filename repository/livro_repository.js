@@ -1,3 +1,4 @@
+// repository/livro_repository.js
 let listaLivros = [];
 let autoIncrement = 1;
 
@@ -7,6 +8,8 @@ function listar() {
 
 function inserir(livro) {
     livro.id = autoIncrement++;
+    // RN Aluno 1: Adicionar status de disponibilidade
+    livro.disponivel = true; 
     listaLivros.push(livro);
     return Promise.resolve(livro);
 }
@@ -14,31 +17,19 @@ function inserir(livro) {
 function buscarPorId(id) {
     return Promise.resolve(listaLivros.find(
         function(livro) {
-            return (livro.id == id);        
+            return (livro.id == Number(id));        
         }
     ));
 }
 
 function buscarIndicePorId(id) {
-    return listaLivros.findIndex((livro) => livro.id === id);
-}
-
-function pesquisarPorNome(nome) {
-    return Promise.resolve(listaLivros.filter( (livro) => livro.nome == nome ));
-}
-
-function pesquisarPorNomeLike(nome) {
-    return Promise.resolve(listaLivros.filter ( (livro) => {
-        const NomeLivroUpper = livro.nome.toUpperCase();
-        const nomeUpper = nome.toUpperCase();
-        return (NomeLivroUpper.search(nomeUpper) >= 0);
-    }));
+    return listaLivros.findIndex((livro) => livro.id === Number(id));
 }
 
 function atualizar(id, livroAtual) {
     let indice = buscarIndicePorId(id);
     if(indice >= 0) {
-        livroAtual.id = id; 
+        livroAtual.id = Number(id); 
         listaLivros[indice] = livroAtual;
         return Promise.resolve(listaLivros[indice]);
     }

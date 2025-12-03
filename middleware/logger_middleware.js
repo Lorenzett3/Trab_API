@@ -1,3 +1,4 @@
+// middleware/logger_middleware.js
 function realizaLog(req, res, next) {
     let rotaAcessada = `Rota acessada: ${req.method} ${req.path}`;
     let requestTime = Date.now();

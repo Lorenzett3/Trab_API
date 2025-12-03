@@ -1,25 +1,42 @@
-const emprestimoService = require('../services/emprestimo_service');
+// controller/emprestimo.controller.js
+const emprestimoService = require('../service/emprestimo_service');
+const devolucaoService = require('../service/devolucao_service'); 
 
-async function inserir(req, res) {
-  try {
-    // 1. Receber os atributos do empréstimo e do cliente
-    const { clientId, amount, termInMonths } = req.body;
-    
-    // 2. Chamar o Service, passando os atributos
-    const loan = await emprestimoService.processRequest({ clientId, amount, termInMonths });
-    
-    // 3. Responder ao cliente com o status 201 (Criado)
-    return res.status(201).json(loan);
+async function retirarLivros(req, res) {
+    try {
+        const { clientMatricula, books } = req.body;
+        
+        const loan = await emprestimoService.retirarLivros(clientMatricula, books);
+        
+        return res.status(201).json({ 
+            message: 'Empréstimo registrado com sucesso.',
+            loan: loan,
+            details: `Data de Entrega Calculada: ${loan.dueDate}`
+        });
 
-  } catch (error) {
-    // 4. Tratar e padronizar a resposta de erro
-    if (error.isClientError) {
-       return res.status(400).json({ message: error.message });
+    } catch (error) {
+        return res.status(error.id || 500).json({ message: error.msg || 'Erro interno ao registrar empréstimo.' });
     }
-    return res.status(500).json({ message: 'Erro interno do servidor.' });
-  }
+}
+
+async function devolverLivros(req, res) {
+    try {
+        const { loanId, booksReturned } = req.body;
+        
+        const result = await devolucaoService.devolverLivro(loanId, booksReturned);
+
+        return res.status(200).json({ 
+            message: 'Devolução registrada com sucesso.',
+            loan: result.loan,
+            delayDetails: result.delayDetails
+        });
+
+    } catch (error) {
+        return res.status(error.id || 500).json({ message: error.msg || 'Erro interno ao registrar devolução.' });
+    }
 }
 
 module.exports = {
-  inserir
+    retirarLivros,
+    devolverLivros
 }

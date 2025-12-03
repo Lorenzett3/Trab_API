@@ -1,7 +1,11 @@
+// router/usuario_router.js
 const express = require('express')
 const router = express.Router();
 
-const usuarioController = require('../controller/usuario_controller')
+const usuarioController = require('../controller/usuario_controller');
+const authMiddleware = require("../middleware/auth_middleware");
+
+router.use(authMiddleware);
 
 router.get('/', usuarioController.listar)
 router.post('/', usuarioController.inserir)

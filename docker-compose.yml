@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  api_biblioteca:
+    container_name: trab_api_node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    restart: always
+    environment:
+      PORT: 3000
+      JWT_SECRET: segredissimo
