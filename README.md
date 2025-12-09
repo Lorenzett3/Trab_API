@@ -8,7 +8,7 @@ O projeto utiliza a arquitetura em camadas Controller -> Service -> Repository p
 
 Camada Controller: Lida com requisições HTTP (req, res).
 
-Camada Service: Contém a Lógica de Negócio (RNs, validações complexas).
+Camada Service: Contém a Lógica de Negócio (RNs e validações complexas).
 
 Camada Repository: Responsável pelo acesso aos dados em memória (simulação de banco de dados).
 
@@ -31,7 +31,6 @@ TRAB_API/
 ├── data.js          # Base de dados centralizada (arrays)
 
 └── app.js           # Ponto de entrada e montagem das rotas
-
 
 
 2. Unificação de Requisitos e Regras de Negócio (RNs)
@@ -70,9 +69,9 @@ Nome, Cidade e E-mail.
 
 2.2 Transações e Regras de Empréstimo Unificadas
 
-O módulo de Empréstimo e Devolução no emprestimo_router.js mescla múltiplas regras de negócio:
+O módulo de Empréstimo e Devolução mescla múltiplas regras de negócio:
 
-RN do Aluno 3 (Limite de Cliente): Na retirada (/retirada), verifica se o total de livros emprestados não excede o limite máximo do Tipo de Cliente.
+RN do Aluno 3 (Limite de Cliente): Na retirada, verifica se o total de livros emprestados não excede o limite máximo do Tipo de Cliente.
 
 RN do Aluno 2 (Data de Entrega): A data_entrega é calculada automaticamente como +15 dias a partir da data de retirada.
 
@@ -86,19 +85,25 @@ RN do Aluno 2 (Atraso na Devolução): A Devolução calcula o número de dias d
 
 Node.js (LTS) e npm.
 
+Docker Desktop (Obrigatório para rodar o ambiente de forma consistente).
+
 Ferramenta de teste HTTP (Insomnia ou Postman).
 
-3.2 Execução no Terminal
+3.2 Execução no Terminal (Método Oficial)
+
+IMPORTANTE: O servidor deve ser rodado usando o Docker.
 
 Instalação de Dependências:
 
 npm install
 
 
-Executar o Servidor:
+Executar o Servidor com Docker Compose:
 
-node app.js
+docker compose up --build -d
 
+
+(Este comando constrói a imagem e inicia o contêiner em segundo plano.)
 
 O servidor iniciará na porta 3000.
 
