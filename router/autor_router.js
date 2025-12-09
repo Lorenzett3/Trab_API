@@ -3,10 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 const autorController = require("../controller/autor_controller");
-
-const authMiddleware = require("../middleware/auth_middleware");
-
-router.use(authMiddleware);
+const { verificarAcesso } = require("../middleware/auth_middleware");
+router.use(verificarAcesso);
 
 router.get('/', autorController.listar);
 router.post('/', autorController.inserir);

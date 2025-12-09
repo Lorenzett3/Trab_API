@@ -15,7 +15,7 @@ function verificarAcesso (req, res, next) {
     }
 
     try {
-        const data = tokenService.verificarToken(token);
+        const data = tokenService.verifyToken(token);
 
         req.usuarioId = data.id;
 

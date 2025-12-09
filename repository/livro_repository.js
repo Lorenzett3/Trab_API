@@ -8,7 +8,6 @@ function listar() {
 
 function inserir(livro) {
     livro.id = autoIncrement++;
-    // RN Aluno 1: Adicionar status de disponibilidade
     livro.disponivel = true; 
     listaLivros.push(livro);
     return Promise.resolve(livro);
@@ -26,10 +25,24 @@ function buscarIndicePorId(id) {
     return listaLivros.findIndex((livro) => livro.id === Number(id));
 }
 
+function pesquisarPorNome(nome) {
+    return Promise.resolve(listaLivros.find( (livro) => livro.nome === nome ));
+}
+
+function pesquisarPorNomeLike(nome) {
+    return Promise.resolve(listaLivros.filter ( (livro) => {
+        const NomeLivroUpper = livro.nome.toUpperCase();
+        const nomeUpper = nome.toUpperCase();
+        return (NomeLivroUpper.includes(nomeUpper));
+    }));
+}
+
+
 function atualizar(id, livroAtual) {
     let indice = buscarIndicePorId(id);
     if(indice >= 0) {
         livroAtual.id = Number(id); 
+        livroAtual.disponivel = listaLivros[indice].disponivel;
         listaLivros[indice] = livroAtual;
         return Promise.resolve(listaLivros[indice]);
     }
@@ -52,6 +65,6 @@ module.exports = {
     buscarPorId,
     atualizar,
     deletar,
-    pesquisarPorNome,
+    pesquisarPorNome, 
     pesquisarPorNomeLike
 }

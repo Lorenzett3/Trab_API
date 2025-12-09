@@ -36,7 +36,19 @@ async function devolverLivros(req, res) {
     }
 }
 
+async function listar(req, res) {
+    try {
+        const emprestimos = await emprestimoService.listar(); 
+        return res.status(200).json(emprestimos);
+    } catch (error) {
+        return res.status(error.id || 500).json({ 
+            message: error.msg || 'Erro ao listar empréstimos.' 
+        });
+    }
+}
+
 module.exports = {
     retirarLivros,
-    devolverLivros
+    devolverLivros,
+    listar
 }

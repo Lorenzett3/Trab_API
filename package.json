@@ -1,16 +1,15 @@
 {
-  "name": "biblio_aluno2",
+  "name": "trab_api",
   "version": "1.0.0",
-  "description": "",
+  "description": "API de gerenciamento de biblioteca (A1, A2, A3)",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "nodemon": "^3.1.11"
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3",
+    "uuid": "^9.0.1"
   }
 }
