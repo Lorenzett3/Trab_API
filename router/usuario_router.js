@@ -5,7 +5,7 @@ const router = express.Router();
 const usuarioController = require('../controller/usuario_controller');
 
 const { verificarAcesso } = require("../middleware/auth_middleware");
-router.use(verificarAcesso); 
+router.use(verificarAcesso);
 
 router.get('/', usuarioController.listar)
 router.post('/', usuarioController.inserir) 
