@@ -25,8 +25,27 @@ async function buscarPorId(id) {
     throw { id: 404, msg: "Tipo de Cliente não encontrado!" };
 }
 
+async function atualizar(id, tipo) {
+    if (!tipo || !tipo.name || typeof tipo.maxBooks !== 'number' || tipo.maxBooks <= 0) {
+        throw { id: 400, msg: "Dados incorretos para atualização." };
+    }
+    const updated = await tipoClienteRepository.atualizar(id, tipo);
+    if (updated) return updated;
+    
+    throw { id: 404, msg: "Tipo de Cliente não encontrado para atualizar." };
+}
+
+async function deletar(id) {
+    const deleted = await tipoClienteRepository.deletar(id);
+    if (deleted) return deleted;
+    
+    throw { id: 404, msg: "Tipo de Cliente não encontrado para deletar." };
+}
+
 module.exports = {
     listar,
     inserir,
     buscarPorId,
+    atualizar,
+    deletar
 }

@@ -1,8 +1,9 @@
 // repository/usuario_repository.js
-let listaUsuarios = [
-    { id:1, nome: "Admin", email: "admin@mail.com", senha: "123456" }
-];
-let autoIncrement = 2;
+const { data } = require('../data'); 
+
+const listaUsuarios = data.users;
+
+let autoIncrement = listaUsuarios.length > 0 ? listaUsuarios[listaUsuarios.length - 1].id + 1 : 1;
 
 function listar() {
     return Promise.resolve(listaUsuarios);
@@ -23,9 +24,11 @@ function buscarPorId(id) {
 }
 
 function buscarPorEmail(email) {
+    const emailToSearch = email.toLowerCase().trim();
+
     return Promise.resolve(listaUsuarios.find(
         function(usuario) {
-            return (usuario.email == email)
+            return (usuario.email.toLowerCase() === emailToSearch);
         }
     ));
 }

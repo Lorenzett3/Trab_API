@@ -1,6 +1,6 @@
 // service/usuario_service.js
 const usuarioRepository = require("../repository/usuario_repository");
-const tokenService = require("./token_service");
+const tokenService = require("./token_service"); 
 
 async function listar() {
   return await usuarioRepository.listar();
@@ -8,7 +8,7 @@ async function listar() {
 
 async function inserir(usuario) {
   if (usuario && usuario.nome && usuario.email && usuario.senha) {
-    return await usuarioRepository.inserir(usuario);
+    return await usuarioRepository.cadastrarUsuario(usuario); 
   } else {
     throw {
       id: 400,
@@ -36,20 +36,20 @@ async function buscarPorEmail(email) {
 }
 
 async function verificarLogin(usuario) {
-  if (usuario.email) {
-    let usuarioCadastrado = await usuarioRepository.buscarPorEmail(
-      usuario.email
-    );
-    if (usuarioCadastrado) {
-      if (usuario.senha && usuario.senha == usuarioCadastrado.senha) {
-        const token = tokenService.generateToken({
-          id: usuarioCadastrado.id,
-          email: usuarioCadastrado.email,
-        });
-        return { token: token };
-      }
-    }
+  let usuarioCadastrado = await usuarioRepository.buscarPorEmail(
+    usuario.email
+  );
+
+  if (usuarioCadastrado && usuario.senha && usuario.senha === usuarioCadastrado.senha) {
+    
+    const token = tokenService.criarToken({ 
+      id: usuarioCadastrado.id,
+      email: usuarioCadastrado.email,
+    });
+    return { token: token };
+
   }
+  
   throw { id: 401, msg: "Email ou senha invalidos" };
 }
 

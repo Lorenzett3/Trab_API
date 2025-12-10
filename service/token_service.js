@@ -1,3 +1,5 @@
+// service/token_service.js
+
 const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET || "segredissimo";
@@ -12,11 +14,11 @@ const verifyToken = (token) => {
     const decodedPayload = jwt.verify(token, JWT_SECRET);
     return decodedPayload;
   } catch (error) {
-    throw new Error("Token inválido ou expirado.");
+    throw { id: 401, msg: "Token inválido ou expirado." }; 
   }
 };
 
 module.exports = {
-  generateToken,
+  criarToken: generateToken, 
   verificarToken: verifyToken, 
 };

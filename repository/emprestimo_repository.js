@@ -1,17 +1,33 @@
-// repository/emprestimo_repository.js
-let listaEmprestimo = [];
+// repository/livro_repository.js
+let listaLivros = [];
 let autoIncrement = 1;
 
 function listar() {
-    return Promise.resolve(listaEmprestimo);
+    return Promise.resolve(listaLivros);
 }
 
-function inserir(emprestimo) {
-    emprestimo.id = autoIncrement++;
-    emprestimo.livro_emprestado = true; 
-    emprestimo.isReturned = false;
-    listaEmprestimo.push(emprestimo);
-    return Promise.resolve(emprestimo);
+function inserir(livro) {
+    livro.id = autoIncrement++;
+    livro.disponivel = true; 
+    listaLivros.push(livro);
+    return Promise.resolve(livro);
+}
+
+function buscarPorId(id) {
+    return Promise.resolve(listaLivros.find(l => l.id == Number(id)));
+}
+
+function pesquisarPorNome(nome) {
+    return Promise.resolve(listaLivros.find(l => l.nome === nome));
+}
+
+function atualizarStatusDisponibilidade(nomeLivro, disponivel) {
+    let livro = listaLivros.find(l => l.nome === nomeLivro);
+    if (livro) {
+        livro.disponivel = disponivel;
+        return Promise.resolve(livro);
+    }
+    return Promise.resolve(undefined);
 }
 
 function buscarEmprestimoPorId(id) {
@@ -39,9 +55,9 @@ function deletar(id) {
 
 
 module.exports = {
-  listar,
-  inserir,
-  buscarEmprestimoPorId,
-  atualizar,
-  deletar,
+    listar,
+    inserir,
+    buscarEmprestimoPorId,
+    atualizar,
+    deletar,
 }

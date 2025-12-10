@@ -11,11 +11,11 @@ const emprestimoRouter = require("./router/emprestimo_router");
 
 const editoraRouter = require("./router/editora_router");
 const clienteRouter = require("./router/cliente_router"); 
+const tipoClienteRouter = require("./router/tipo_cliente_router"); 
 
 const app = express();
 
 app.use(realizaLog); 
-
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -29,6 +29,7 @@ app.use("/api/autores", autorRouter);
 app.use("/api/livros", livroRouter);
 app.use("/api/editoras", editoraRouter);
 app.use("/api/clientes", clienteRouter); 
+app.use("/api/tipos-cliente", tipoClienteRouter); 
 app.use("/api/emprestimos", emprestimoRouter); 
 
 app.listen(PORT, () => {

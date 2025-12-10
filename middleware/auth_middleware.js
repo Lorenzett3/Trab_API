@@ -15,7 +15,7 @@ function verificarAcesso (req, res, next) {
     }
 
     try {
-        const data = tokenService.verifyToken(token);
+        const data = tokenService.verificarToken(token); 
 
         req.usuarioId = data.id;
 
@@ -23,7 +23,7 @@ function verificarAcesso (req, res, next) {
         next();
     }
     catch (err) {
-        res.status(401).json({ id: 401, msg: err.msg || "Token inválido ou expirado." });
+        res.status(err.id || 401).json({ id: 401, msg: err.msg || "Acesso inválido." });
     }
 }
 
