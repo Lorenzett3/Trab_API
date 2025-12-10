@@ -1,6 +1,5 @@
 // app.js
 const express = require ("express");
-const { PORT } = require("./data");
 const { realizarLogin } = require("./controller/login_controller");
 const { realizaLog } = require("./middleware/logger_middleware"); 
 
@@ -13,6 +12,7 @@ const editoraRouter = require("./router/editora_router");
 const clienteRouter = require("./router/cliente_router"); 
 
 const app = express();
+const port = 3000;
 
 app.use(realizaLog); 
 
@@ -31,6 +31,6 @@ app.use("/api/editoras", editoraRouter);
 app.use("/api/clientes", clienteRouter); 
 app.use("/api/emprestimos", emprestimoRouter); 
 
-app.listen(PORT, () => {
-    console.log(`API running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`API running on port ${port}`);
 });

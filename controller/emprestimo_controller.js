@@ -2,6 +2,10 @@
 const emprestimoService = require('../service/emprestimo_service');
 const devolucaoService = require('../service/devolucao_service'); 
 
+async function listar(req, res) {
+    res.json(await emprestimoService.listar());
+}
+
 async function retirarLivros(req, res) {
     try {
         const { clientMatricula, books } = req.body;
@@ -37,6 +41,7 @@ async function devolverLivros(req, res) {
 }
 
 module.exports = {
+    listar,
     retirarLivros,
     devolverLivros
 }

@@ -5,7 +5,7 @@ const router = express.Router();
 const livroController = require("../controller/livro_controller");
 const authMiddleware = require("../middleware/auth_middleware");
 
-router.use(authMiddleware);
+router.use(authMiddleware.verificarAcesso);
 
 router.get('/', livroController.listar);
 router.post('/', livroController.inserir);

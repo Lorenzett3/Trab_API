@@ -1,7 +1,7 @@
 {
   "name": "biblio_aluno2",
   "version": "1.0.0",
-  "description": "",
+  "description": "Documentação da API de Gerenciamento de Biblioteca",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
@@ -9,9 +9,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
+    "node": "^20.19.6",
     "nodemon": "^3.1.11",
     "pg": "^8.16.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lorenzett3/Trab_API.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Lorenzett3/Trab_API/issues"
+  },
+  "homepage": "https://github.com/Lorenzett3/Trab_API#readme"
 }

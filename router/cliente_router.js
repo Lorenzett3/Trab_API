@@ -5,7 +5,7 @@ const router = express.Router();
 const clienteController = require("../controller/cliente_controller");
 const authMiddleware = require("../middleware/auth_middleware");
 
-router.use(authMiddleware);
+router.use(authMiddleware.verificarAcesso);
 
 router.route('/')
     .post(clienteController.inserir)
