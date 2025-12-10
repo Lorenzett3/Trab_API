@@ -1,33 +1,73 @@
 // repository/usuario_repository.js
-let listaUsuarios = [
-    { id:1, nome: "Admin", email: "admin@mail.com", senha: "123456" }
-];
-let autoIncrement = 2;
+const { Client } = require("pg");
 
-function listar() {
-    return Promise.resolve(listaUsuarios);
+const confCliente = {
+    user: "postgres",
+    password: "password",
+    host:"localhost",
+    port: 5432,
+    database: "crud_biblioteca" 
 }
 
-function cadastrarUsuario(usuario) {
-    usuario.id = autoIncrement++;
-    listaUsuarios.push(usuario);
-    return Promise.resolve(usuario);
+async function listar() {
+    const cliente = new Client(confCliente);
+
+    await cliente.connect();
+
+    const res = await cliente.query("SELECT * FROM usuarios ORDER BY id");
+    const listaUsuarios = res.rows;
+
+    await cliente.end();
+
+    return listaUsuarios;
 }
 
-function buscarPorId(id) {
-    return Promise.resolve(listaUsuarios.find(
-        function(usuario) {
-            return (usuario.id == Number(id));        
-        }
-    ));
+async function cadastrarUsuario(usuarios) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = `INSERT INTO usuarios (nome, email, senha)
+                VALUES ($1, $2, $3)
+                RETURNING *`;
+
+    const values = [ usuarios.nome, usuarios.email, usuarios.senha ];
+    const res = await cliente.query(sql, values);
+    
+    const usuarioInserido = res.rows[0];
+
+    await cliente.end();
+
+    return usuarioInserido;
 }
 
-function buscarPorEmail(email) {
-    return Promise.resolve(listaUsuarios.find(
-        function(usuario) {
-            return (usuario.email == email)
-        }
-    ));
+async function buscarPorId(id) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = "SELECT * FROM usuarios WHERE id=$1";
+    const result = await cliente.query(sql, [id]);
+
+    await cliente.end();
+
+    const usuarioEncontrado = result.rows[0];
+    return (usuarioEncontrado);
+}
+
+
+async function buscarPorEmail(usuarios) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = "SELECT * FROM usuarios WHERE email=$1";
+    const result = await cliente.query(sql, usuarios.email);
+
+    await cliente.end();
+
+    const usuarioEncontrado = result.rows[0];
+    return (usuarioEncontrado);
 }
 
 module.exports = {

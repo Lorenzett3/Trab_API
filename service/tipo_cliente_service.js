@@ -6,7 +6,7 @@ async function listar() {
 }
 
 async function inserir(tipo) {
-    if (!tipo || !tipo.name || typeof tipo.maxBooks !== 'number' || tipo.maxBooks <= 0) {
+    if (!tipo || !tipo.name || typeof tipo.max_books !== 'number' || tipo.max_books <= 0) {
         throw { id: 400, msg: "Tipo de Cliente com dados incorretos (Nome e quantidade máxima válida são obrigatórios)." };
     }
 

@@ -1,42 +1,94 @@
 // repository/emprestimo_repository.js
-let listaEmprestimo = [];
-let autoIncrement = 1;
+const { Client } = require("pg");
 
-function listar() {
-    return Promise.resolve(listaEmprestimo);
+const confCliente = {
+    user: "postgres",
+    password: "password",
+    host:"localhost",
+    port: 5432,
+    database: "crud_biblioteca" 
 }
 
-function inserir(emprestimo) {
-    emprestimo.id = autoIncrement++;
-    emprestimo.livro_emprestado = true; 
-    emprestimo.isReturned = false;
-    listaEmprestimo.push(emprestimo);
-    return Promise.resolve(emprestimo);
+
+async function listar() {
+    const cliente = new Client(confCliente);
+
+    await cliente.connect();
+
+    const res = await cliente.query("SELECT * FROM emprestimos ORDER BY id");
+    const listaEmprestimos = res.rows;
+
+    await cliente.end();
+
+    return listaEmprestimos;
 }
 
-function buscarEmprestimoPorId(id) {
-    return Promise.resolve(listaEmprestimo.find(e => e.id == Number(id)));
+async function inserir(emprestimos) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = `INSERT INTO emprestimos (data_retirada, data_entrega, nome_cliente, emprestar_livros)
+                VALUES ($1,$2,$3,$4)
+                RETURNING *`;
+
+    const values = [emprestimos.data_retirada, emprestimos.data_entrega, emprestimos.nome_cliente, emprestimos.emprestar_livros];
+    const res = await cliente.query(sql, values);
+    
+    const emprestimoInserido = res.rows[0];
+
+    await cliente.end();
+
+    return emprestimoInserido;
 }
 
-function atualizar(id, emprestimo) {
-    let indice = listaEmprestimo.findIndex(e => e.id === Number(id));
-    if(indice >= 0) {
-        emprestimo.id = Number(id); 
-        listaEmprestimo[indice] = emprestimo;
-        return Promise.resolve(listaEmprestimo[indice]);
-    }
-    return Promise.resolve(undefined);
+async function buscarEmprestimoPorId(id) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = "SELECT * FROM emprestimos WHERE id=$1";
+    const result = await cliente.query(sql, [id]);
+
+    await cliente.end();
+
+    const emprestimoEncontrado = result.rows[0];
+    return (emprestimoEncontrado);
 }
 
-function deletar(id) {
-    let indiceEmprestimo = listaEmprestimo.findIndex(e => e.id === Number(id));
-    if(indiceEmprestimo >= 0) {
-        let emprestimoRemovido = listaEmprestimo.splice(indiceEmprestimo, 1)[0];
-        return emprestimoRemovido;
-    }
-    return Promise.resolve(undefined);
+async function atualizar(id, emprestimos) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = `UPDATE emprestimos set data_retirada=$1, data_entrega=$2, nome_cliente=$3, emprestar_livros=$4
+                WHERE id=$5
+                RETURNING *`;
+
+    const values = [emprestimos.data_retirada, emprestimos.data_entrega, emprestimos.nome_cliente, emprestimos.emprestar_livros, id];
+    
+    const res = await cliente.query(sql, values);
+
+    await cliente.end();
+
+    const emprestimoAtualizado = res.rows[0];
+    return (emprestimoAtualizado);
 }
 
+async function deletar(id) {
+    const sql = "DELETE FROM emprestimos WHERE id=$1 RETURNING *"
+    const values = [id];
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const result = await cliente.query(sql, values);
+
+    await cliente.end();
+
+    const emprestimoDeletado = result.rows[0];
+    return (emprestimoDeletado);
+}
 
 module.exports = {
   listar,

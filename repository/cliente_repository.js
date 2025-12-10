@@ -1,26 +1,72 @@
 // repository/cliente_repository.js
-let listaClientes = [];
+const { Client } = require("pg");
 
-function listar() {
-    return Promise.resolve(listaClientes);
+const confCliente = {
+    user: "postgres",
+    password: "password",
+    host:"localhost",
+    port: 5432,
+    database: "crud_biblioteca" 
 }
 
-function inserir(cliente) {
-    // Simula auto-incremento de ID interno
-    cliente.id = listaClientes.length > 0 ? listaClientes[listaClientes.length - 1].id + 1 : 1;
-    // Inicializa a contagem de livros emprestados (RN Aluno 3)
-    cliente.borrowedCount = 0;
-    listaClientes.push(cliente);
-    return Promise.resolve(cliente);
+async function listar() {
+    const cliente = new Client(confCliente);
+
+    await cliente.connect();
+
+    const res = await cliente.query("SELECT * FROM clientes ORDER BY id");
+    const listaEmprestimos = res.rows;
+
+    await cliente.end();
+
+    return listaEmprestimos;
 }
 
-function buscarPorMatricula(matricula) {
+async function inserir(clientes) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = `INSERT INTO clientes (matricula, nome, client_type_id, email)
+                VALUES ($1, $2, $3, $4)
+                RETURNING *`;
+
+    const values = [ clientes.matricula, clientes.nome, clientes.client_type_Id, clientes.email ];
+    const res = await cliente.query(sql, values);
+    
+    const clientesInserido = res.rows[0];
+
+    await cliente.end();
+
+    return clientesInserido;
+}
+
+async function buscarPorMatricula(matricula) {
     // Busca por Matrícula (RN Aluno 3)
-    return Promise.resolve(listaClientes.find(c => c.matricula === matricula));
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = "SELECT * FROM clientes WHERE matricula=$1";
+    const result = await cliente.query(sql, [matricula]);
+
+    await cliente.end();
+
+    const matriculaClienteEncontrada = result.rows[0];
+    return (matriculaClienteEncontrada);
 }
 
-function buscarPorId(id) {
-    return Promise.resolve(listaClientes.find(c => c.id === Number(id)));
+async function buscarPorId(id) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = "SELECT * FROM clientes WHERE id=$1";
+    const result = await cliente.query(sql, [id]);
+
+    await cliente.end();
+
+    const clienteEncontrado = result.rows[0];
+    return (clienteEncontrado);
 }
 
 function atualizarContagemEmprestimo(matricula, borrowedCount) {
@@ -32,25 +78,39 @@ function atualizarContagemEmprestimo(matricula, borrowedCount) {
     return Promise.resolve(undefined);
 }
 
-function atualizar(matricula, clienteAtual) {
-    let indice = listaClientes.findIndex(c => c.matricula === matricula);
-    if(indice >= 0) {
-        // Preserva o ID interno e borrowedCount
-        clienteAtual.id = listaClientes[indice].id;
-        clienteAtual.borrowedCount = listaClientes[indice].borrowedCount;
-        listaClientes[indice] = clienteAtual;
-        return Promise.resolve(listaClientes[indice]);
-    }
-    return Promise.resolve(undefined);
+async function atualizar(id, clientes) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = `UPDATE clientes set matricula=$1, nome=$2, client_type_id=$3, email=$4
+                WHERE id=$5
+                RETURNING *`;
+
+    const values = [clientes.matricula, clientes.nome, clientes.client_type_id, clientes.email, id];
+    
+    const res = await cliente.query(sql, values);
+
+    await cliente.end();
+
+    const clienteAtualizado = res.rows[0];
+    return (clienteAtualizado);
 }
 
-function deletar(matricula) {
-    let indiceCliente = listaClientes.findIndex(c => c.matricula === matricula);
-    if(indiceCliente >= 0) {
-        let clienteRemovido = listaClientes.splice(indiceCliente, 1)[0];
-        return clienteRemovido;
-    }
-    return Promise.resolve(undefined);
+async function deletar(matricula) {
+
+    const sql = "DELETE FROM clientes WHERE matricula=$1 RETURNING *"
+    const values = [matricula];
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const result = await cliente.query(sql, values);
+
+    await cliente.end();
+
+    const clienteDeletado = result.rows[0];
+    return (clienteDeletado);
 }
 
 

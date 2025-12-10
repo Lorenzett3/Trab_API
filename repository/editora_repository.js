@@ -1,41 +1,104 @@
-const { data } = require('../data');
-const listaEditoras = data.publishers;
+const { Client } = require("pg");
 
-function listar() {
-    return Promise.resolve(listaEditoras);
+const confCliente = {
+    user: "postgres",
+    password: "password",
+    host:"localhost",
+    port: 5432,
+    database: "crud_biblioteca" 
 }
 
-function inserir(editora) {
-    editora.id = listaEditoras.length > 0 ? listaEditoras[listaEditoras.length - 1].id + 1 : 1; 
-    listaEditoras.push(editora);
-    return Promise.resolve(editora);
+async function listar() {
+
+    const cliente = new Client(confCliente);
+
+    await cliente.connect();
+
+    const res = await cliente.query("SELECT * FROM editora ORDER BY id");
+    const listaEditora = res.rows;
+
+    await cliente.end();
+
+    return listaEditora;
 }
 
-function buscarPorId(id) {
-    return Promise.resolve(listaEditoras.find(p => p.id == id));
+async function inserir(editora) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = `INSERT INTO editora (nome, cidade, email)
+                VALUES ($1, $2, $3)
+                RETURNING *`;
+
+    const values = [ editora.nome, editora.cidade, editora.email ];
+    const res = await cliente.query(sql, values);
+    
+    const usuarioInserido = res.rows[0];
+
+    await cliente.end();
+
+    return usuarioInserido;    
 }
 
-function buscarPorEmail(email) {
-    return Promise.resolve(listaEditoras.find(p => p.email == email));
+async function buscarPorId(id) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = "SELECT * FROM editora WHERE id=$1";
+    const result = await cliente.query(sql, [id]);
+
+    await cliente.end();
+
+    const editoraEncontrada = result.rows[0];
+    return (editoraEncontrada);
 }
 
-function atualizar(id, editoraAtual) {
-    let indice = listaEditoras.findIndex(p => p.id === id);
-    if(indice >= 0) {
-        editoraAtual.id = id; 
-        listaEditoras[indice] = editoraAtual;
-        return Promise.resolve(listaEditoras[indice]);
-    }
-    return Promise.resolve(undefined);
+async function buscarPorEmail(editora) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = "SELECT * FROM editora WHERE email=$1";
+    const result = await cliente.query(sql, editora.email);
+
+    await cliente.end();
+
+    const editoraEncontrada = result.rows[0];
+    return (editoraEncontrada);
 }
 
-function deletar(id) {
-    let indice = listaEditoras.findIndex(p => p.id === id);
-    if(indice >= 0) {
-        let editoraRemovida = listaEditoras.splice(indice, 1)[0];
-        return editoraRemovida;
-    }
-    return Promise.resolve(undefined);
+async function atualizar(id, editoraAtual) {
+
+    const sql = 'UPDATE editora set nome=$1, cidade=$2, email=$3 WHERE id=$4 RETURNING *'
+    const values = [editoraAtual.nome, editoraAtual.cidade, editoraAtual.email, id];
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const result = await cliente.query(sql, values);
+
+    await cliente.end();
+
+    const editoraAtualizado = result.rows[0];
+    return (editoraAtualizado);
+}
+
+async function deletar(id) {
+
+    const sql = 'DELETE FROM editora WHERE id=$1 RETURNING *'
+    const values = [id];
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const result = await cliente.query(sql, values);
+
+    await cliente.end();
+
+    const editoraDeletada = result.rows[0];
+    return (editoraDeletada);
 }
 
 module.exports = {

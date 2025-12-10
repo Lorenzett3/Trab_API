@@ -1,12 +1,39 @@
-const { data } = require('../data');
-const listaTipos = data.clientTypes;
+const { Client } = require("pg");
 
-function listar() {
-    return Promise.resolve(listaTipos);
+const confCliente = {
+    user: "postgres",
+    password: "password",
+    host:"localhost",
+    port: 5432,
+    database: "crud_biblioteca" 
 }
 
-function buscarPorId(id) {
-    return Promise.resolve(listaTipos.find(t => t.id == id));
+// !tipo.name || typeof tipo.maxBooks
+async function listar() {
+    const cliente = new Client(confCliente);
+
+    await cliente.connect();
+
+    const res = await cliente.query("SELECT * FROM tipo_cliente ORDER BY id");
+    const listaLivros = res.rows;
+
+    await cliente.end();
+
+    return listaLivros;
+}
+
+async function buscarPorId(id) {
+
+    const cliente = new Client(confCliente);
+    await cliente.connect();
+
+    const sql = "SELECT * FROM tipo_cliente WHERE id=$1";
+    const result = await cliente.query(sql, [id]);
+
+    await cliente.end();
+
+    const livroEncontrado = result.rows[0];
+    return (livroEncontrado);
 }
 
 

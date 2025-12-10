@@ -7,7 +7,7 @@ async function listar() {
 }
 
 async function inserir(cliente) {
-    if (!cliente || !cliente.matricula || !cliente.name || !cliente.clientTypeId || !cliente.email) {
+    if (!cliente || !cliente.matricula || !cliente.name || !cliente.client_type_id || !cliente.email) {
         throw { id: 400, msg: "Cliente com dados incorretos (Matrícula, Nome, Tipo ID e Email são obrigatórios)." };
     }
 
@@ -16,9 +16,9 @@ async function inserir(cliente) {
         throw { id: 400, msg: "Matrícula já cadastrada." };
     }
 
-    const clientType = await tipoClienteRepository.buscarPorId(cliente.clientTypeId);
+    const clientType = await tipoClienteRepository.buscarPorId(cliente.client_type_id);
     if (!clientType) {
-        throw { id: 400, msg: "Tipo de Cliente (clientTypeId) inválido." };
+        throw { id: 400, msg: `Tipo de Cliente inválido.` };
     }
 
     return await clienteRepository.inserir(cliente);
