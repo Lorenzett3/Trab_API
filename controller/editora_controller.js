@@ -16,7 +16,7 @@ async function inserir(req, res) {
         editora = await editoraService.inserir(editora);
         res.status(201).json(editora);
     } catch(err) {
-        res.status(err.id || 400).json({ message: err.msg || 'Dados de editora incorretos.' });
+        res.status(err.id || 500).json({ message: err.msg || 'erro nao identificado' });
     }
 }
 

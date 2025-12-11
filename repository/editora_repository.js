@@ -5,7 +5,7 @@ const confCliente = {
     password: "password",
     host:"localhost",
     port: 5432,
-    database: "crud_biblioteca" 
+    database: "crud_alunos" 
 }
 
 async function listar() {
@@ -27,9 +27,7 @@ async function inserir(editora) {
     const cliente = new Client(confCliente);
     await cliente.connect();
 
-    const sql = `INSERT INTO editora (nome, cidade, email)
-                VALUES ($1, $2, $3)
-                RETURNING *`;
+    const sql = "INSERT INTO editora (nome, cidade, email) VALUES ($1, $2, $3) RETURNING *";
 
     const values = [ editora.nome, editora.cidade, editora.email ];
     const res = await cliente.query(sql, values);
@@ -55,13 +53,13 @@ async function buscarPorId(id) {
     return (editoraEncontrada);
 }
 
-async function buscarPorEmail(editora) {
-
+async function buscarPorEmail(email) {
+    console.log("email", email);
     const cliente = new Client(confCliente);
     await cliente.connect();
 
     const sql = "SELECT * FROM editora WHERE email=$1";
-    const result = await cliente.query(sql, editora.email);
+    const result = await cliente.query(sql, [email]);
 
     await cliente.end();
 

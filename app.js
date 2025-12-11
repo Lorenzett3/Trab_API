@@ -1,6 +1,6 @@
 // app.js
 const express = require ("express");
-const { realizarLogin } = require("./controller/login_controller");
+const { realizarLogin, realizarCadastro } = require("./controller/login_controller");
 const { realizaLog } = require("./middleware/logger_middleware"); 
 
 const livroRouter = require("./router/livro_router");
@@ -23,6 +23,8 @@ app.get('/', (req, res) => {
 });
 
 app.post("/api/login", realizarLogin);
+app.post("/api/cadastro", realizarCadastro);
+
 
 app.use("/api/usuarios", usuarioRouter);
 app.use("/api/autores", autorRouter);

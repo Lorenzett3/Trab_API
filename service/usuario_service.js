@@ -7,18 +7,16 @@ async function listar() {
 }
 
 async function inserir(usuario) {
+
   if (usuario && usuario.nome && usuario.email && usuario.senha) {
-    return await usuarioRepository.inserir(usuario);
+    return await usuarioRepository.cadastrarUsuario(usuario);
   } else {
-    throw {
-      id: 400,
-      msg: "Usuario com dados incorretos (nome, email, senha são obrigatórios).",
-    };
+    throw { id: 400, msg: "Usuario com dados incorretos (nome, email, senha são obrigatórios)."};
   }
 }
 
 async function buscarPorId(id) {
-  let usuario = await usuarioRepository.buscarPorId(id);
+  await usuarioRepository.buscarPorId(id);
   if (usuario) {
     return usuario;
   } else {
@@ -37,15 +35,11 @@ async function buscarPorEmail(email) {
 
 async function verificarLogin(usuario) {
   if (usuario.email) {
-    let usuarioCadastrado = await usuarioRepository.buscarPorEmail(
-      usuario.email
-    );
+    let usuarioCadastrado = await usuarioRepository.buscarPorEmail(usuario.email);
+    console.log(usuarioCadastrado)
     if (usuarioCadastrado) {
       if (usuario.senha && usuario.senha == usuarioCadastrado.senha) {
-        const token = tokenService.generateToken({
-          id: usuarioCadastrado.id,
-          email: usuarioCadastrado.email,
-        });
+        const token = tokenService.generateToken({id: usuarioCadastrado.id, email: usuarioCadastrado.email,});
         return { token: token };
       }
     }

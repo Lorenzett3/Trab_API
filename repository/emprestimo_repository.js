@@ -6,7 +6,7 @@ const confCliente = {
     password: "password",
     host:"localhost",
     port: 5432,
-    database: "crud_biblioteca" 
+    database: "crud_alunos" 
 }
 
 

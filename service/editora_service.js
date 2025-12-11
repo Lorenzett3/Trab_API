@@ -6,6 +6,7 @@ async function listar() {
 }
 
 async function inserir(editora) {
+
     if(!editora || !editora.nome || !editora.cidade || !editora.email){
         throw { id: 400, msg: "Editora com dados incorretos (Nome, Cidade, E-mail são obrigatórios)." };
     }

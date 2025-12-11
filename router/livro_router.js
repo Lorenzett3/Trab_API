@@ -3,9 +3,9 @@ const express = require("express");
 const router = express.Router();
 
 const livroController = require("../controller/livro_controller");
-const authMiddleware = require("../middleware/auth_middleware");
+//const authMiddleware = require("../middleware/auth_middleware");
 
-router.use(authMiddleware.verificarAcesso);
+//router.use(authMiddleware.verificarAcesso);
 
 router.get('/', livroController.listar);
 router.post('/', livroController.inserir);

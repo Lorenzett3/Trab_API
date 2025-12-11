@@ -1,0 +1,10 @@
+- Abra o Docker Desktop
+- Caso não tenha criado a rede, criar antes de executar:
+
+    > docker network create local-network
+
+
+- Baixe o arquivo  docker-compose.yml (em anexo)
+- Execute: 
+
+    > docker-compose -f docker-compose.yml up -d

@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 
 const emprestimoController = require("../controller/emprestimo_controller");
-const authMiddleware = require("../middleware/auth_middleware"); 
+//const authMiddleware = require("../middleware/auth_middleware"); 
 
-router.use(authMiddleware.verificarAcesso);
+//router.use(authMiddleware.verificarAcesso);
 
 // POST /api/emprestimos/retirada 
 router.post('/retirada', emprestimoController.retirarLivros); 
